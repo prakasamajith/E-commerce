@@ -22,7 +22,7 @@ public class GroceryOrder {
 		WebElement element = driver.findElement(By.id("email"));
 		element.sendKeys("ajithprakasam@gmail.com");
 
-		driver.findElement(By.id("pass")).sendKeys("Prakasam@77");
+		driver.findElement(By.id("pass")).sendKeys("Your Password");
 		WebElement loginBtn = driver.findElement(By.xpath("//button [@value='login']"));
 		loginBtn.click();
 
