@@ -3,6 +3,7 @@ package org.onlineshopping;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -10,43 +11,52 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class GroceryOrder {
+//to print order id, product name & prince in console using BaseClass Methods
+
+public class GroceryOrder extends BaseClass {
 
 	public static void main(String[] args) throws InterruptedException, AWTException {
+
 		WebDriver driver = new ChromeDriver();
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+
 		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		driver.get("https://omrbranch.com/");
 
 		WebElement element = driver.findElement(By.id("email"));
 		element.sendKeys("ajithprakasam@gmail.com");
 
-		driver.findElement(By.id("pass")).sendKeys("Your Password");
+		driver.findElement(By.id("pass")).sendKeys("Prakasam@77");
 		WebElement loginBtn = driver.findElement(By.xpath("//button [@value='login']"));
 		loginBtn.click();
 
-		Thread.sleep(3000);
-		WebElement categories = driver.findElement(By.xpath("//a [contains (text(),'CATEGORIES ')]"));
-
-		Actions actions = new Actions(driver);
-		actions.moveToElement(categories).perform();
-		WebElement grocery = driver.findElement(By.xpath("//a [contains (text(),'Grocery')]"));
-		actions.moveToElement(grocery).perform();
-
-		driver.findElement(By.xpath("//a [contains (text(),'Fruit & Nuts')]")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("(//a [contains (text(),'Add')] )[5]")).click();
-
-		Thread.sleep(2000);
-		driver.findElement(By.id("cart-47")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("//a[contains(text(),' Go To Cart ')]")).click();
-		Thread.sleep(3000);
-		driver.findElement(By.xpath("//div[@data-target='#addressModal']")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.id("address_type")).click();
-
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(120));
+		/*
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='cart_btn']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),' Go To Cart ')]"))).click();
+		try {
+			WebElement close = wait.until(ExpectedConditions.visibilityOfElementLocated(
+					By.xpath("(//img[@src='https://omrbranch.com/front/images/close-icon.png'])[1]")));close.click();
+					System.out.println("Product removed in cart Successfully");
+		} catch (NoSuchElementException e) {
+					System.out.println("Close icon not present");
+		} finally {
+					System.out.println("in finally ");
+		}
+		*/
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("search"))).sendKeys("Nuts");
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@type='submit'])[1]"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='hover1 font16 fontsemibold colorWhite bgTheme px-4 py-1 radius50 dyna_btn addBtn-21']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("cart-30"))).click();
+		WebElement goToCart = driver.findElement(By.xpath("//a[contains(text(),' Go To Cart ')]"));
+		js.executeScript("arguments[0].click()", goToCart);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@data-target='#addressModal']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("address_type"))).click();
 		WebElement selectAddressType = driver.findElement(By.xpath("//option[@value='Home']"));
 		Robot robot = new Robot();
 		robot.keyPress(KeyEvent.VK_DOWN);
@@ -74,24 +84,18 @@ public class GroceryOrder {
 		Select select = new Select(selectState);
 		select.selectByIndex(35);
 
-		Thread.sleep(2000);
-		WebElement selectCity = driver.findElement(By.name("city"));
-
+		WebElement selectCity = wait.until(ExpectedConditions.elementToBeClickable(By.name("city")));
 		Select city = new Select(selectCity);
 		city.selectByVisibleText("Perungudi");
 
 		driver.findElement(By.name("zipcode")).sendKeys("600096");
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
-
 		Thread.sleep(2000);
-
-		WebElement paymentType = driver.findElement(By.id("payment_type"));
+		WebElement paymentType = wait.until(ExpectedConditions.elementToBeClickable(By.id("payment_type")));
 		Select payment = new Select(paymentType);
 		payment.selectByIndex(1);
 
-		Thread.sleep(2000);
-
-		driver.findElement(By.xpath("//label[contains(text(),'Visa')]")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[contains(text(),'Visa')]"))).click();
 
 		driver.findElement(By.name("card_no")).sendKeys("5555555555552222");
 		WebElement selectMonth = driver.findElement(By.name("month"));
@@ -106,7 +110,7 @@ public class GroceryOrder {
 
 		driver.findElement(By.id("placeOrder")).click();
 
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 
 		driver.close();
 
@@ -120,34 +124,30 @@ public class GroceryOrder {
 		driver1.findElement(By.id("pass")).sendKeys("Prakasam@77");
 		WebElement loginBtn2 = driver1.findElement(By.xpath("//button [@value='login']"));
 		loginBtn2.click();
-
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 		driver1.findElement(By.xpath("//a[@data-testid='username']")).click();
-
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@data-testid='username']"))).click();
 		WebElement myAccount = driver1.findElement(By.xpath("//a[contains(text(),'My Account')]"));
-
 		Actions ac = new Actions(driver1);
 		ac.moveToElement(myAccount).perform();
 		myAccount.click();
 
 		driver1.findElement(By.xpath("//a[contains(text(),'orders')]")).click();
 
-		Thread.sleep(3000);
-
+		Thread.sleep(2000);
 		driver1.findElement(By.xpath("(//a[contains(text(),'More Details')])[1]")).click();
-		Thread.sleep(3000);
-		WebElement orderNo = driver1.findElement(By.xpath("//p [contains(text(),'Order No: ')]"));
+		Thread.sleep(2000);
+		WebElement orderNo = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//p [contains(text(),'Order No: ')]")));
 		String order = orderNo.getText();
 		System.out.println(order);
 
-		WebElement productName = driver1.findElement(By.xpath("//p [contains(text(),'Nutraj 100% ')]"));
+		WebElement productName = driver1.findElement(By.xpath("//p [contains(text(),'Berries')]"));
 		String product = productName.getText();
 		System.out.println("Product Name:" + product);
 
 		WebElement productPrice = driver1.findElement(By.xpath("//span [@data-testid='new-price']"));
 		String price = productPrice.getText();
 		System.out.println("Price" + price);
-
 	}
 
 }
