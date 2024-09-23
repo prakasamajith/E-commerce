@@ -136,9 +136,9 @@ public class BaseClass {
 		executor.executeScript("arguments[0].SetAttribute('value','username')",element);
 	}
 	// 20.Write a code to click button by javascript
-	public void clickBtnJavascript(WebElement element) {
+	public void clickBtnJavascript(WebElement close) {
 		JavascriptExecutor executor=(JavascriptExecutor)driver;
-		executor.executeScript("argument[0].click()", element);
+		executor.executeScript("argument[0].click()", close);
 	}
 	// 21.Write a code to switch to child window
 	public void switchToChildWindow() {

@@ -7,6 +7,7 @@ import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -36,19 +37,30 @@ public class GroceryOrder extends BaseClass {
 		loginBtn.click();
 
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(120));
-		/*
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='cart_btn']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),' Go To Cart ')]"))).click();
-		try {
-			WebElement close = wait.until(ExpectedConditions.visibilityOfElementLocated(
-					By.xpath("(//img[@src='https://omrbranch.com/front/images/close-icon.png'])[1]")));close.click();
-					System.out.println("Product removed in cart Successfully");
-		} catch (NoSuchElementException e) {
-					System.out.println("Close icon not present");
-		} finally {
-					System.out.println("in finally ");
+		String str="0";
+		WebElement cartNo = driver.findElement(By.xpath("//span[@class='cart badge badge-xs badge-danger position-relative mr-0 cart_count']"));
+		String cartNoCount = cartNo.getText();
+		int c = Integer.parseInt(cartNoCount);
+		System.out.println("Cart count:" + cartNoCount);
+		if (!cartNoCount.equals(str)) {
+			wait.until(ExpectedConditions.elementToBeClickable(By.className("cart_btn"))).click();
+			Thread.sleep(1000);
+			WebElement goToCart = driver.findElement(By.xpath("//a[(contains(text(),' Go To Cart '))]"));
+			goToCart.click();
+			Thread.sleep(1000);
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//img[@src=\"https://omrbranch.com/front/images/close-icon.png\"]")));
+			for (int i = 1; i <= c; i++) {
+				wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//img[@src='https://omrbranch.com/front/images/close-icon.png'])[" + i + "]"))).click();
+			}
 		}
-		*/
+		WebElement homeBtn = driver.findElement(By.xpath("(//a[@class='nav-link'])[1]"));
+		try {
+			homeBtn.click();
+		} catch (StaleElementReferenceException e) {
+			homeBtn = driver.findElement(By.xpath("(//a[@class='nav-link'])[1]"));
+			homeBtn.click();
+		}
+
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("search"))).sendKeys("Nuts");
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@type='submit'])[1]"))).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='hover1 font16 fontsemibold colorWhite bgTheme px-4 py-1 radius50 dyna_btn addBtn-21']"))).click();
